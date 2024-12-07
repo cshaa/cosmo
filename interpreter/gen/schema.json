@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Program",
+  "type": "object",
+  "required": [
+    "chunks"
+  ],
+  "properties": {
+    "chunks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ProgramChunk"
+      }
+    }
+  },
+  "definitions": {
+    "FunctionContentPart": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "properties": {
+            "text": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "input"
+          ],
+          "properties": {
+            "input": {
+              "type": "object",
+              "required": [
+                "placeholder"
+              ],
+              "properties": {
+                "placeholder": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "FunctionInterface": {
+      "type": "object",
+      "required": [
+        "content"
+      ],
+      "properties": {
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FunctionContentPart"
+          }
+        }
+      }
+    },
+    "ProgramChunk": {
+      "type": "object",
+      "required": [
+        "statements"
+      ],
+      "properties": {
+        "statements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Statement"
+          }
+        }
+      }
+    },
+    "Statement": {
+      "type": "object",
+      "required": [
+        "arguments",
+        "interface"
+      ],
+      "properties": {
+        "arguments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Statement"
+          }
+        },
+        "interface": {
+          "$ref": "#/definitions/FunctionInterface"
+        }
+      }
+    }
+  }
+}
