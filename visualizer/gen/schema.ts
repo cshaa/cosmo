@@ -5,6 +5,16 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type Expression =
+  | {
+      statement: Statement;
+    }
+  | {
+      textLiteral: string;
+    }
+  | {
+      numberLiteral: number;
+    };
 export type FunctionContentPart =
   | {
       text: string;
@@ -25,7 +35,7 @@ export interface ProgramChunk {
   [k: string]: unknown;
 }
 export interface Statement {
-  arguments: Statement[];
+  arguments: Expression[];
   interface: FunctionInterface;
   [k: string]: unknown;
 }

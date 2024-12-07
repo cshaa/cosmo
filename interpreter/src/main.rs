@@ -12,7 +12,7 @@ struct FunctionInterface {
 }
 
 #[derive(JsonSchema, Serialize, Deserialize, Clone)]
-#[serde(rename_all = "snake_case")]
+#[serde(rename_all = "camelCase")]
 enum FunctionContentPart {
     Text(String),
     Input { placeholder: String },
@@ -31,7 +31,15 @@ struct ProgramChunk {
 #[derive(JsonSchema, Serialize, Deserialize, Clone)]
 struct Statement {
     interface: FunctionInterface,
-    arguments: Vec<Statement>,
+    arguments: Vec<Expression>,
+}
+
+#[derive(JsonSchema, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+enum Expression {
+    Statement(Statement),
+    TextLiteral(String),
+    NumberLiteral(f64),
 }
 
 #[derive(Debug)]
