@@ -1,7 +1,8 @@
 use std::collections::HashMap;
 
 use crate::{
-    CosmoRuntimeError, CosmoRuntimeType, FunctionContentPart, FunctionInterface, NativeFunction,
+    ast::{FunctionContentPart, FunctionInterface},
+    runtime_types::{CosmoRuntimeError, CosmoRuntimeValue, NativeFunction},
 };
 
 pub fn get_native_functions() -> HashMap<String, NativeFunction> {
@@ -26,7 +27,7 @@ pub fn get_native_functions() -> HashMap<String, NativeFunction> {
                     )));
                 };
                 println!("{}", x);
-                Ok(CosmoRuntimeType::None)
+                Ok(CosmoRuntimeValue::None)
             }),
         },
     );
@@ -46,8 +47,8 @@ pub fn get_native_functions() -> HashMap<String, NativeFunction> {
                 ],
             },
             implementation: Box::new(|v| match v.as_slice() {
-                [CosmoRuntimeType::Number(a), CosmoRuntimeType::Number(b)] => {
-                    Ok(CosmoRuntimeType::Number(a + b))
+                [CosmoRuntimeValue::Number(a), CosmoRuntimeValue::Number(b)] => {
+                    Ok(CosmoRuntimeValue::Number(a + b))
                 }
                 _ => Err(CosmoRuntimeError::Internal(format!(
                     "Argument type mismatch: Expected two numbers, got: {:#?}",

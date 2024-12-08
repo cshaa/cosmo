@@ -5,15 +5,34 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
+export type Statement =
+  | {
+      functionCall: FunctionCall;
+    }
+  | {
+      variableDeclaration: {
+        expression: Expression;
+        identifier: string;
+      };
+    }
+  | {
+      variableAssignment: {
+        expression: Expression;
+        identifier: string;
+      };
+    };
 export type Expression =
   | {
-      statement: Statement;
+      functionCall: FunctionCall;
     }
   | {
       textLiteral: string;
     }
   | {
       numberLiteral: number;
+    }
+  | {
+      lambda: Lambda;
     };
 export type FunctionContentPart =
   | {
@@ -22,24 +41,24 @@ export type FunctionContentPart =
   | {
       input: {
         placeholder: string;
-        [k: string]: unknown;
       };
     };
 
 export interface Program {
   chunks: ProgramChunk[];
-  [k: string]: unknown;
 }
 export interface ProgramChunk {
   statements: Statement[];
-  [k: string]: unknown;
 }
-export interface Statement {
+export interface FunctionCall {
   arguments: Expression[];
+  identifier: string;
   interface: FunctionInterface;
-  [k: string]: unknown;
+}
+export interface Lambda {
+  parameters: string[];
+  statements: Statement[];
 }
 export interface FunctionInterface {
   content: FunctionContentPart[];
-  [k: string]: unknown;
 }

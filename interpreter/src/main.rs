@@ -1,72 +1,13 @@
-use std::{collections::HashMap, fmt, fs};
+use std::{collections::HashMap, fs};
 
+use ast::{FunctionInterface, Program};
 use native_functions::get_native_functions;
-use schemars::{schema_for, JsonSchema};
-use serde::{Deserialize, Serialize};
+use schemars::schema_for;
 
+mod ast;
+mod interpreter;
 mod native_functions;
-
-#[derive(JsonSchema, Serialize, Deserialize, Clone)]
-struct FunctionInterface {
-    content: Vec<FunctionContentPart>,
-}
-
-#[derive(JsonSchema, Serialize, Deserialize, Clone)]
-#[serde(rename_all = "camelCase")]
-enum FunctionContentPart {
-    Text(String),
-    Input { placeholder: String },
-}
-
-#[derive(JsonSchema, Serialize, Deserialize, Clone)]
-struct Program {
-    chunks: Vec<ProgramChunk>,
-}
-
-#[derive(JsonSchema, Serialize, Deserialize, Clone)]
-struct ProgramChunk {
-    statements: Vec<Statement>,
-}
-
-#[derive(JsonSchema, Serialize, Deserialize, Clone)]
-struct Statement {
-    interface: FunctionInterface,
-    arguments: Vec<Expression>,
-}
-
-#[derive(JsonSchema, Serialize, Deserialize, Clone)]
-#[serde(rename_all = "camelCase")]
-enum Expression {
-    Statement(Statement),
-    TextLiteral(String),
-    NumberLiteral(f64),
-}
-
-#[derive(Debug)]
-enum CosmoRuntimeType {
-    None,
-    String(String),
-    Number(f64),
-}
-impl fmt::Display for CosmoRuntimeType {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            CosmoRuntimeType::None => write!(f, "None"),
-            CosmoRuntimeType::Number(n) => write!(f, "{}", n),
-            CosmoRuntimeType::String(s) => write!(f, "\"{}\"", s),
-        }
-    }
-}
-
-enum CosmoRuntimeError {
-    Internal(String),
-}
-
-struct NativeFunction {
-    interface: FunctionInterface,
-    implementation:
-        Box<dyn Fn(Vec<CosmoRuntimeType>) -> Result<CosmoRuntimeType, CosmoRuntimeError>>,
-}
+mod runtime_types;
 
 fn main() {
     println!("Hello, world!");
@@ -90,4 +31,7 @@ fn main() {
         .unwrap(),
     )
     .unwrap();
+
+    let program =
+        serde_json::from_str::<Program>(&fs::read_to_string("./program.json").unwrap()).unwrap();
 }

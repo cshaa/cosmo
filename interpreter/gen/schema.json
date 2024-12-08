@@ -19,11 +19,11 @@
         {
           "type": "object",
           "required": [
-            "statement"
+            "functionCall"
           ],
           "properties": {
-            "statement": {
-              "$ref": "#/definitions/Statement"
+            "functionCall": {
+              "$ref": "#/definitions/FunctionCall"
             }
           },
           "additionalProperties": false
@@ -52,8 +52,42 @@
             }
           },
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "lambda"
+          ],
+          "properties": {
+            "lambda": {
+              "$ref": "#/definitions/Lambda"
+            }
+          },
+          "additionalProperties": false
         }
       ]
+    },
+    "FunctionCall": {
+      "type": "object",
+      "required": [
+        "arguments",
+        "identifier",
+        "interface"
+      ],
+      "properties": {
+        "arguments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Expression"
+          }
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "interface": {
+          "$ref": "#/definitions/FunctionInterface"
+        }
+      }
     },
     "FunctionContentPart": {
       "oneOf": [
@@ -105,6 +139,27 @@
         }
       }
     },
+    "Lambda": {
+      "type": "object",
+      "required": [
+        "parameters",
+        "statements"
+      ],
+      "properties": {
+        "parameters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "statements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Statement"
+          }
+        }
+      }
+    },
     "ProgramChunk": {
       "type": "object",
       "required": [
@@ -120,22 +175,68 @@
       }
     },
     "Statement": {
-      "type": "object",
-      "required": [
-        "arguments",
-        "interface"
-      ],
-      "properties": {
-        "arguments": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Expression"
-          }
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "functionCall"
+          ],
+          "properties": {
+            "functionCall": {
+              "$ref": "#/definitions/FunctionCall"
+            }
+          },
+          "additionalProperties": false
         },
-        "interface": {
-          "$ref": "#/definitions/FunctionInterface"
+        {
+          "type": "object",
+          "required": [
+            "variableDeclaration"
+          ],
+          "properties": {
+            "variableDeclaration": {
+              "type": "object",
+              "required": [
+                "expression",
+                "identifier"
+              ],
+              "properties": {
+                "expression": {
+                  "$ref": "#/definitions/Expression"
+                },
+                "identifier": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "variableAssignment"
+          ],
+          "properties": {
+            "variableAssignment": {
+              "type": "object",
+              "required": [
+                "expression",
+                "identifier"
+              ],
+              "properties": {
+                "expression": {
+                  "$ref": "#/definitions/Expression"
+                },
+                "identifier": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
         }
-      }
+      ]
     }
   }
 }
